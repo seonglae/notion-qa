@@ -1,6 +1,6 @@
 """This is the logic for ingesting Notion data into LangChain."""
 from pathlib import Path
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import MarkdownTextSplitter
 import faiss
 from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
@@ -13,13 +13,13 @@ ps = list(Path("Notion_DB/").glob("**/*.md"))
 data = []
 sources = []
 for p in ps:
-    with open(p) as f:
+    with open(p, encoding='UTF8') as f:
         data.append(f.read())
     sources.append(p)
 
 # Here we split the documents, as needed, into smaller chunks.
 # We do this due to the context limits of the LLMs.
-text_splitter = CharacterTextSplitter(chunk_size=1500, separator="\n")
+text_splitter = MarkdownTextSplitter(chunk_size=4097)
 docs = []
 metadatas = []
 for i, d in enumerate(data):
